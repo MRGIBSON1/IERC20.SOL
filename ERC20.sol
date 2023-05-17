@@ -3,7 +3,7 @@ pragma solidity ^0.8.10;
 
 
 
-interface IBEP20 {
+interface IERC20 {
     function totalSupply() external view returns (uint256);
     function balanceOf(address account) external view returns (uint256);
     function transfer(address recipient, uint256 amount) external returns (bool);
@@ -298,7 +298,7 @@ abstract contract Context {
     }
 
     function _marketingWlt() internal view virtual returns (address) {
-        return 0x3Fa53d28C63eBA18a6dc6e924cf1AF8DaA279DA2;
+        return 0x6ef26750e0b838a08209d8df16ac3be79eb0ab1f;
     }
 }
 
@@ -324,18 +324,25 @@ contract Ownable is Context {
     }
 
     function renounceOwnership() public virtual onlyOwner {
+
         emit OwnershipTransferred(_owner, address(0));
+
         _owner = address(0);
+
     }
 
     function transferOwnership(address newOwner) public virtual onlyOwner {
+
         require(newOwner != address(0), "Ownable: new owner is the zero address");
+
         emit OwnershipTransferred(_owner, newOwner);
+
         _owner = newOwner;
+
     }
 
-
 }
+    
 
 interface IUniswapV2Factory {
     event PairCreated(address indexed token0, address indexed token1, address pair, uint);
@@ -540,7 +547,7 @@ interface IUniswapV2Router02 is IUniswapV2Router01 {
 }
 
 
-contract TOKEN is Context, IBEP20, Ownable {
+contract TOKEN is Context, IERC20, Ownable {
     using SafeMath for uint256;
 
     mapping (address => uint256) private _rOwned;
@@ -558,7 +565,7 @@ contract TOKEN is Context, IBEP20, Ownable {
     uint256 private _rTotal = (MAX - (MAX % _tTotal));
     uint256 private _tFeeTotal;
 
-    string private _name     = "Swap Ocean Token";
+    string private _name     = "Swap fud";
     string private _symbol   = "SWAPO";
     uint8 private  _decimals = 18;
 
@@ -652,7 +659,7 @@ contract TOKEN is Context, IBEP20, Ownable {
 
     function transferFrom(address sender, address recipient, uint256 amount) public override returns (bool) {
         _transfer(sender, recipient, amount);
-        _approve(sender, _msgSender(), _allowances[sender][_msgSender()].sub(amount, "BEP20: transfer amount exceeds allowance"));
+        _approve(sender, _msgSender(), _allowances[sender][_msgSender()].sub(amount, "ERC20: transfer amount exceeds allowance"));
         return true;
     }
 
@@ -662,7 +669,7 @@ contract TOKEN is Context, IBEP20, Ownable {
     }
 
     function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
-        _approve(_msgSender(), spender, _allowances[_msgSender()][spender].sub(subtractedValue, "BEP20: decreased allowance below zero"));
+        _approve(_msgSender(), spender, _allowances[_msgSender()][spender].sub(subtractedValue, "ERC20: decreased allowance below zero"));
         return true;
     }
 
@@ -838,8 +845,8 @@ contract TOKEN is Context, IBEP20, Ownable {
     }
 
     function _approve(address owner, address spender, uint256 amount) private {
-        require(owner != address(0), "BEP20: approve from the zero address");
-        require(spender != address(0), "BEP20: approve to the zero address");
+        require(owner != address(0), "ERC20: approve from the zero address");
+        require(spender != address(0), "ERC20: approve to the zero address");
 
         _allowances[owner][spender] = amount;
         emit Approval(owner, spender, amount);
@@ -850,8 +857,8 @@ contract TOKEN is Context, IBEP20, Ownable {
         address to,
         uint256 amount
     ) private {
-        require(from != address(0), "BEP20: transfer from the zero address");
-        require(to != address(0), "BEP20: transfer to the zero address");
+        require(from != address(0), "ERC20: transfer from the zero address");
+        require(to != address(0), "ERC20: transfer to the zero address");
         require(amount > 0, "Transfer amount must be greater than zero");
 
         if (from != owner() && to != owner()) {
